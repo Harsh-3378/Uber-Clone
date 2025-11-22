@@ -1,21 +1,66 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import UserDataContext from "../contextData/UserDataContext";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 const UserLogin = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+  const { setUser } = useContext(UserDataContext);
 
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
-    const [userData, setUserData] = useState({})
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    const userData = {
+      email:email,
+      password:password,
+    };
 
+    const id = toast.loading("Loading...");
 
-    const submitHandler = (e) => {
-        e.preventDefault();
-        
-        setUserData({ email, password });
-        console.log(userData);
-        setEmail("");
-        setPassword("");
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/users/login`,
+        userData
+      );
+
+      if (response.status !== 200) {
+        throw new Error("Failed to login !!");
+      }
+
+      toast.update(id, {
+        render: "Login Successful",
+        type: "success",
+        isLoading: false,
+        autoClose: 2000,
+      });
+
+      const data = response.data;
+      setUser(data.user);
+      localStorage.setItem('token', data.token)
+      navigate("/user-home");
+
+    } catch (error) {
+      console.log(error);
+      toast.update(id, {
+        render: error.message,
+        type: "error",
+        isLoading: false,
+        autoClose: 2500,
+      });
     }
+
+    setEmail("");
+    setPassword("");
+  };
+
+  useEffect(()=>{
+    const token = localStorage.getItem('token');
+
+    if(token)
+        navigate('/user-home')
+  },[])
 
   return (
     <div className="p-7 flex flex-col justify-between h-screen">
@@ -51,14 +96,17 @@ const UserLogin = () => {
         </form>
         <p className="text-center text-sm font-semibold">
           New here?{" "}
-          <Link to="/signup" className="text-blue-600">
+          <Link to="/user-signup" className="text-blue-600">
             Create new Account
           </Link>
         </p>
       </div>
 
       <div>
-        <Link to="/captain-login" className="flex justify-center items-center bg-[#10b461] text-white font-semibold mb-7 rounded px-4 py-2 border w-full text-md placeholder:text-sm">
+        <Link
+          to="/captain-login"
+          className="flex justify-center items-center bg-[#10b461] text-white font-semibold mb-7 rounded px-4 py-2 border w-full text-md placeholder:text-sm"
+        >
           Sign in as Captain
         </Link>
       </div>

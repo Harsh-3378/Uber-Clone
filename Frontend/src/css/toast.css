@@ -1,0 +1,41 @@
+/* Make toast smaller on mobile */
+.Toastify__toast {
+  font-size: 0.85rem;       /* smaller text */
+  padding: 8px 12px;        /* less padding */
+  border-radius: 10px;      /* softer corners */
+  min-height: 40px;         /* reduce height */
+  max-width: 280px;         /* perfect for mobile width */
+}
+
+/* Reduce icon size */
+.Toastify__toast-icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* Reduce close button size */
+.Toastify__close-button > svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Toast container positioning */
+.Toastify__toast-container {
+  padding: 0 !important;
+}
+
+/* Success/Warning/Error colors customization (optional) */
+.Toastify__toast--success {
+  background: #4ade80;
+  color: #fff;
+}
+
+.Toastify__toast--error {
+  background: #f87171;
+  color: #fff;
+}
+
+.Toastify__toast--info {
+  background: #60a5fa;
+  color: #fff;
+}

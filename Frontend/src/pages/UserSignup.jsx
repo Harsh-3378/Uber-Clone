@@ -1,26 +1,65 @@
 import React from "react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { toast } from "react-toastify";
+import UserDataContext from "../contextData/UserDataContext";
+import { useContext } from "react";
 
 const UserSignup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [userData, setUserData] = useState({});
+  const navigate = useNavigate();
 
-  const submitHandler = (e) => {
+  const { setUser } = useContext(UserDataContext);
+
+  const submitHandler = async (e) => {
     e.preventDefault();
-
-    setUserData({
+    const newUser = {
       fullname: {
         firstname: firstName,
         lastname: lastName,
       },
       email,
       password,
-    });
-    console.log(userData);
+    };
+
+    const id = toast.loading("Loading...");
+
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/users/register`,
+        newUser
+      );
+
+      if (response.status !== 201) {
+        throw new Error("Failed to register user");
+      }
+
+      const data = response.data;
+
+      toast.update(id, {
+        render: "Registration Successful",
+        type: "success",
+        isLoading: false,
+        autoClose: 2000,
+      });
+
+      setUser(data.user);
+      localStorage.setItem('token', data.token);
+      navigate("/user-home");
+    } catch (error) {
+      console.log(error);
+      toast.update(id, {
+        render: error.message,
+        type: "error",
+        isLoading: false,
+        autoClose: 2500,
+      });
+    }
+
     setFirstName("");
     setLastName("");
     setEmail("");
@@ -76,12 +115,12 @@ const UserSignup = () => {
             className="bg-[#eeeeee] mb-4 rounded px-4 py-2 w-full text-md placeholder:text-sm"
           />
           <button className="bg-[#111] text-white font-semibold mb-3 rounded px-4 py-2 border w-full text-md placeholder:text-sm">
-            Sign Up
+            Create Account
           </button>
         </form>
         <p className="text-center text-sm font-semibold">
           Already have an Account?{" "}
-          <Link to="/login" className="text-blue-600">
+          <Link to="/user-login" className="text-blue-600">
             Login
           </Link>
         </p>
