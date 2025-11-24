@@ -14,20 +14,25 @@ const UserProtectWrapper = ({children}) => {
         if (!token) {
             navigate("/user-login");
         }
+        
+    axios
+      .get(`${import.meta.env.VITE_BASE_URL}/users/profile`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          setUser(response.data.user);
+          setLoading(false);
+        }
+      })
+      .catch(() => {
+        navigate("/user-login");
+      });
     }, [token, navigate])
 
-    axios.get(`${import.meta.env.VITE_BASE_URL}/users/profile`, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        }
-    }).then(response => {
-        if (response.status === 200) {
-            setUser(response.data.user);
-            setLoading(false);
-        }
-    }).catch(() => {
-        navigate("/user-login");
-    });
+
     if (loading) {
         return <div>Loading...</div>;
     }
