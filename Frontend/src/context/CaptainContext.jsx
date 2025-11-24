@@ -3,10 +3,10 @@ import CaptainDataContext from "../contextData/CaptainDataContext";
 
 const CaptainContext = ({children})=>{
 
-    const [captain, setCaptain] = useState({});
+    const [captainData, setCaptainData] = useState({});
 
     return (
-        <CaptainDataContext.Provider value={{captain, setCaptain}}>
+        <CaptainDataContext.Provider value={{captainData, setCaptainData}}>
             {children}
         </CaptainDataContext.Provider>
     )

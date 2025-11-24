@@ -30,7 +30,7 @@ const UserProtectWrapper = ({children}) => {
       .catch(() => {
         navigate("/user-login");
       });
-    }, [token, navigate])
+    }, [token, navigate, setUser]);
 
 
     if (loading) {

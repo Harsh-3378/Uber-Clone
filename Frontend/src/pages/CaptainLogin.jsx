@@ -1,4 +1,3 @@
-import React, { use } from "react";
 import { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import CaptainDataContext from "../contextData/CaptainDataContext";

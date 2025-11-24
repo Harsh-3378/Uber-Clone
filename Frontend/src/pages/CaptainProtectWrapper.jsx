@@ -8,31 +8,35 @@ const CaptainProtectWrapper = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
-  const {setCaptain} = useContext(CaptainDataContext);
+  const {setCaptainData} = useContext(CaptainDataContext);
   
 
   useEffect(() => {
     if (!token) {
       navigate("/captain-login");
     }
-  }, [token, navigate]);
 
-  axios.get(`${import.meta.env.VITE_BASE_URL}/captains/profile`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  })
-    .then((res) => {
-      if(res.status === 200){
-        setCaptain(res.data.captain);
-        setIsLoading(false);
-      }
-    })
-    .catch((error) => {
-      console.log("Error fetching captain data:", error);
-      setIsLoading(false);
-      navigate("/captain-login");
-    });
+      axios
+        .get(`${import.meta.env.VITE_BASE_URL}/captains/profile`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((res) => {
+          if (res.status === 200) {
+            setCaptainData(res.data.captain);
+            setIsLoading(false);
+          }
+        })
+        .catch((error) => {
+          console.log("Error fetching captain data:", error);
+          setIsLoading(false);
+          navigate("/captain-login");
+        });
+
+  }, [token, navigate, setCaptainData]);
+
+
 
   if (isLoading) {
     return <div>Loading...</div>;
